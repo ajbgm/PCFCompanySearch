@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control 
+    namespace="proximo3" 
+    constructor="CompanyHousePCF" 
+    version="0.0.2" 
+    display-name-key="CompanyHousePCF" 
+    description-key="CompanyHousePCF description" 
+    control-type="standard">
+
+    <!-- Input properties -->
+    <property 
+      name="searchCompanyByName"
+      display-name-key="Company Name"
+      description-key="Company Name to search"
+      of-type="SingleLine.Text"
+      usage="bound"
+      required="false" />
+
+    <property 
+      name="companyName"
+      display-name-key="Company Name"
+      description-key="Company Name to search"
+      of-type="SingleLine.Text"
+      usage="input"
+      required="true" />
+
+    <property 
+      name="buttonSearchText"
+      display-name-key="Button Search Text"
+      description-key="Text to display on the search button"
+      of-type="SingleLine.Text"
+      usage="input"
+      required="true" />
+
+    <property
+      name="searchCompanyEndpointEnvironmentVariable"
+      display-name-key="Search Company Endpoint Environment Variable"
+      description-key="Environment variable holding the endpoint"
+      of-type="SingleLine.Text"
+      usage="input"
+      required="true" />
+
+    <!-- Resources -->
+    <resources>
+      <code path="index.ts" order="1"/>
+    </resources>
+
+    <!-- Features -->
+    <feature-usage>
+      <uses-feature name="WebAPI" required="false" />
+    </feature-usage>
+
+  </control>
+</manifest>
