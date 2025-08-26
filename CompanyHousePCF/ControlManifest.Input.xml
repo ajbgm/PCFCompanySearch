@@ -22,7 +22,7 @@
       display-name-key="Company Name"
       description-key="Company Name to search"
       of-type="SingleLine.Text"
-      usage="input"
+      usage="bound"
       required="true" />
 
     <property 
@@ -33,6 +33,24 @@
       usage="input"
       required="true" />
 
+    <property 
+      name="buttonColor"
+      display-name-key="Button Background Colour"
+      description-key="Background colour for buttons"
+      of-type="SingleLine.Text"
+      usage="input"
+      required="false"
+    />
+
+    <property 
+      name="buttonTextColor"
+      display-name-key="Button Text Colour"
+      description-key="Text colour for buttons"
+      of-type="SingleLine.Text"
+      usage="input"
+      required="false"
+    />
+
     <property
       name="searchCompanyEndpointEnvironmentVariable"
       display-name-key="Search Company Endpoint Environment Variable"
@@ -40,6 +58,22 @@
       of-type="SingleLine.Text"
       usage="input"
       required="true" />
+
+   <property
+      name="ItemsToRetrieve"
+      display-name-key="Items To Retrieve"
+      description-key="Number of items to retrieve from the API. Default is 25. Max is 100"
+      of-type="SingleLine.Text"
+      usage="input"
+      required="false" />
+    <property name="companynumber" display-name-key="Company Number" of-type="SingleLine.Text" usage="bound" />
+    <property name="address1" display-name-key="Address 1" of-type="SingleLine.Text" usage="bound" />
+    <property name="address2" display-name-key="Address 2" of-type="SingleLine.Text" usage="bound" />
+    <property name="address3" display-name-key="Address 3" of-type="SingleLine.Text" usage="bound" />
+    <property name="address4" display-name-key="Address 4" of-type="SingleLine.Text" usage="bound" />
+    <property name="postcode" display-name-key="Postcode" of-type="SingleLine.Text" usage="bound" />
+    <property name="country" display-name-key="Country" of-type="SingleLine.Text" usage="bound" />
+    <property name="companyCreated" display-name-key="Company Created" of-type="DateAndTime.DateOnly" usage="bound" />
 
     <!-- Resources -->
     <resources>
