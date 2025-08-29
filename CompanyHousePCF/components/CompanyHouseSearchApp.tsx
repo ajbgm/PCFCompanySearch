@@ -1,12 +1,11 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import {
     DefaultButton,
     PrimaryButton,
     Dialog,
-    DialogType,
-    DialogFooter
+    DialogType
 } from "@fluentui/react";
 import { BuildingIcon, NumberIcon, AddressIcon, CalendarIcon } from "./icons/CustomIcons";
 
@@ -42,6 +41,8 @@ export const CompanyHouseSearchApp: React.FC<Props> = ({
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+    const selectedPanelRef = useRef<HTMLDivElement | null>(null);
+
     const handleSearch = async () => {
         if (!companyName) {
             alert("No company name provided from the record.");
@@ -76,7 +77,9 @@ export const CompanyHouseSearchApp: React.FC<Props> = ({
     const handleConfirm = () => {
         if (selectedIndex !== null) {
             const company = results[selectedIndex];
-            const pipeValue = `${company.Name}|${company.CompanyNumber}|${company.Address}|${new Date(company.DateOfCreation).toLocaleDateString("en-GB")}`;
+            const pipeValue = `${company.Name}|${company.CompanyNumber}|${company.Address}|${new Date(
+                company.DateOfCreation
+            ).toLocaleDateString("en-GB")}`;
             onSelectCompany(pipeValue);
         }
         // Close dialog after confirm
@@ -93,6 +96,13 @@ export const CompanyHouseSearchApp: React.FC<Props> = ({
 
     const selectedCompany = selectedIndex !== null ? results[selectedIndex] : null;
 
+    // Focus scroll to selection panel when a company is selected
+    useEffect(() => {
+        if (selectedCompany && selectedPanelRef.current) {
+            selectedPanelRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    }, [selectedCompany]);
+
     return (
         <div style={{ width: "100%", fontFamily: "Segoe UI" }}>
             {/* Search Button */}
@@ -103,15 +113,15 @@ export const CompanyHouseSearchApp: React.FC<Props> = ({
                 styles={
                     buttonColor || buttonTextColor
                         ? {
-                              root: {
-                                  ...(buttonColor ? { backgroundColor: buttonColor } : {}),
-                                  ...(buttonTextColor ? { color: buttonTextColor } : {})
-                              },
-                              rootHovered: {
-                                  ...(buttonColor ? { backgroundColor: buttonColor } : {}),
-                                  ...(buttonTextColor ? { color: buttonTextColor } : {})
-                              }
-                          }
+                            root: {
+                                ...(buttonColor ? { backgroundColor: buttonColor } : {}),
+                                ...(buttonTextColor ? { color: buttonTextColor } : {})
+                            },
+                            rootHovered: {
+                                ...(buttonColor ? { backgroundColor: buttonColor } : {}),
+                                ...(buttonTextColor ? { color: buttonTextColor } : {})
+                            }
+                        }
                         : undefined
                 }
             />
@@ -132,11 +142,71 @@ export const CompanyHouseSearchApp: React.FC<Props> = ({
                 {loading && <p>Loading...</p>}
                 {!loading && results.length === 0 && <p>No results found.</p>}
 
+                {/* Selection Panel */}
+                {selectedCompany && (
+                    <div
+                        ref={selectedPanelRef}
+                        style={{
+                            marginBottom: 15,
+                            padding: 10,
+                            border: "1px solid #ccc",
+                            borderRadius: 6,
+                            background: "#f8f8f8"
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "10px"
+                            }}
+                        >
+                            {/* First Row: Name + Company Number */}
+                            <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+                                <span style={{ display: "flex", alignItems: "center" }}>
+                                    <BuildingIcon />
+                                    <span style={{ marginLeft: 5 }}>{selectedCompany.Name}</span>
+                                </span>
+                                <span style={{ display: "flex", alignItems: "center" }}>
+                                    <NumberIcon />
+                                    <span style={{ marginLeft: 5 }}>{selectedCompany.CompanyNumber}</span>
+                                </span>
+                            </div>
+
+                            {/* Second Row: Address + Date of Creation */}
+                            <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+                                <span style={{ display: "flex", alignItems: "center" }}>
+                                    <AddressIcon />
+                                    <span style={{ marginLeft: 5 }}>{selectedCompany.Address}</span>
+                                </span>
+                                <span style={{ display: "flex", alignItems: "center" }}>
+                                    <CalendarIcon />
+                                    <span style={{ marginLeft: 5 }}>
+                                        {new Date(selectedCompany.DateOfCreation).toLocaleDateString("en-GB")}
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Confirm & Cancel buttons */}
+                        <div style={{ marginTop: 10, display: "flex", gap: "10px" }}>
+                            <PrimaryButton text="Confirm" onClick={handleConfirm} />
+                            <DefaultButton text="Cancel" onClick={handleClear} />
+                        </div>
+                    </div>
+                )}
+
                 {/* Results Table */}
                 {!loading && results.length > 0 && (
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                         <thead>
-                            <tr style={{ textAlign: "left", borderBottom: "2px solid #ccc", background: "#f9f9f9" }}>
+                            <tr
+                                style={{
+                                    textAlign: "left",
+                                    borderBottom: "2px solid #ccc",
+                                    background: "#f9f9f9"
+                                }}
+                            >
                                 <th style={{ padding: "10px" }}>Name</th>
                                 <th style={{ padding: "10px" }}>Company Number</th>
                                 <th style={{ padding: "10px" }}>Address</th>
@@ -176,12 +246,6 @@ export const CompanyHouseSearchApp: React.FC<Props> = ({
                         </tbody>
                     </table>
                 )}
-
-                {/* Footer Buttons */}
-                <DialogFooter>
-                    <PrimaryButton text="Confirm" onClick={handleConfirm} disabled={selectedIndex === null} />
-                    <DefaultButton text="Cancel" onClick={handleClear} />
-                </DialogFooter>
             </Dialog>
         </div>
     );
