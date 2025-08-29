@@ -73,18 +73,24 @@ export class CompanyHousePCF implements ComponentFramework.StandardControl<IInpu
         // Split address by comma and trim spaces
         const addressParts = fullAddress.split(",").map(p => p.trim());
 
-        // First three address lines
-        const address1 = addressParts[0] || "";
-        const address2 = addressParts[1] || "";
-        const address3 = addressParts[2] || "";
+        let address1 = "";
+        let address2 = "";
+        let address3 = "";
+        let address4 = "";
+        let country = "";
+        let postcode = "";
 
-        // Last two parts are country and postcode
-        const country = addressParts.length >= 2 ? addressParts[addressParts.length - 2] : "";
-        const postcode = addressParts.length >= 1 ? addressParts[addressParts.length - 1] : "";
+        if (addressParts.length >= 2) {
+            postcode = addressParts[addressParts.length - 1];
+            country = addressParts[addressParts.length - 2];
+        }
 
-        // Everything in between (index 3 .. length-3) becomes address4
-        const middle = addressParts.slice(3, addressParts.length - 2);
-        const address4 = middle.length > 0 ? middle.join(", ") : "";
+        const mainParts = addressParts.slice(0, -2); // everything except country+postcode
+
+        if (mainParts.length > 0) address1 = mainParts[0];
+        if (mainParts.length > 1) address2 = mainParts[1];
+        if (mainParts.length > 2) address3 = mainParts[2];
+        if (mainParts.length > 3) address4 = mainParts.slice(3).join(", ");
 
         // Parse company created date (dd/MM/yyyy expected)
         let createdDate: Date | undefined;
@@ -103,7 +109,7 @@ export class CompanyHousePCF implements ComponentFramework.StandardControl<IInpu
         }
 
         return {
-            companyName: companyName,
+            companyName,
             companynumber: companyNumber,
             address1,
             address2,
@@ -114,7 +120,6 @@ export class CompanyHousePCF implements ComponentFramework.StandardControl<IInpu
             companyCreated: createdDate
         };
     }
-
 
     public destroy(): void {
         ReactDOM.unmountComponentAtNode(this.container);
